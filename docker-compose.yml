@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # Frontend - Next.js
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  # Backend - FastAPI
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/multiagent_ultra
+      - REDIS_URL=redis://redis:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./backend:/app
+      - ./chroma_db:/app/chroma_db
+    depends_on:
+      - postgres
+      - redis
+
+  # Database - PostgreSQL
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=multiagent_ultra
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Cache & Queue - Redis
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # Vector Database - ChromaDB (optional separate service)
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+
+volumes:
+  postgres_data:
+  redis_data:
+  chroma_data:
