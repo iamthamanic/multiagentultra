@@ -79,14 +79,77 @@ export interface APIResponse<T = any> {
 // Retry mechanism
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Enhanced fetch with error handling and retries
+/**
+ * Creates a timeout controller for HTTP requests
+ */
+function createTimeoutController(): { controller: AbortController; timeoutId: NodeJS.Timeout } {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
+  return { controller, timeoutId };
+}
+
+/**
+ * Processes HTTP error responses and extracts meaningful error messages
+ */
+async function processHttpError(response: Response, url: string): Promise<APIError> {
+  const errorText = await response.text();
+  let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+
+  try {
+    const errorJson = JSON.parse(errorText);
+    errorMessage = errorJson.detail || errorJson.message || errorMessage;
+  } catch {
+    errorMessage = errorText || errorMessage;
+  }
+
+  return new APIError(response.status, errorMessage, url);
+}
+
+/**
+ * Processes successful HTTP responses
+ */
+async function processSuccessResponse<T>(response: Response): Promise<APIResponse<T>> {
+  const data = await response.json();
+  return {
+    data,
+    status: response.status,
+    message: 'Success',
+  };
+}
+
+/**
+ * Handles retry logic for failed requests
+ */
+async function handleRetryableError<T>(
+  error: Error,
+  url: string,
+  options: RequestInit,
+  retryCount: number,
+  errorType: 'timeout' | 'network'
+): Promise<APIResponse<T>> {
+  if (retryCount < API_CONFIG.RETRY_ATTEMPTS) {
+    const message = errorType === 'timeout' ? 'Request timeout' : 'Network error';
+    console.warn(`${message}, retrying... (${retryCount + 1}/${API_CONFIG.RETRY_ATTEMPTS})`);
+
+    await delay(API_CONFIG.RETRY_DELAY * (retryCount + 1));
+    return apiRequest<T>(url, options, retryCount + 1);
+  }
+
+  const errorMessage =
+    errorType === 'timeout' ? 'Request timeout' : 'Network error - please check your connection';
+
+  throw new NetworkError(errorMessage, url);
+}
+
+/**
+ * Enhanced fetch with error handling and retries
+ */
 export async function apiRequest<T = any>(
   url: string,
   options: RequestInit = {},
   retryCount = 0
 ): Promise<APIResponse<T>> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
+  const { controller, timeoutId } = createTimeoutController();
 
   try {
     const response = await fetch(url, {
@@ -100,52 +163,22 @@ export async function apiRequest<T = any>(
 
     clearTimeout(timeoutId);
 
-    // Handle HTTP errors
     if (!response.ok) {
-      const errorText = await response.text();
-      let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-
-      try {
-        const errorJson = JSON.parse(errorText);
-        errorMessage = errorJson.detail || errorJson.message || errorMessage;
-      } catch {
-        // If error response is not JSON, use the text as is
-        errorMessage = errorText || errorMessage;
-      }
-
-      throw new APIError(response.status, errorMessage, url);
+      throw await processHttpError(response, url);
     }
 
-    // Handle successful response
-    const data = await response.json();
-    return {
-      data,
-      status: response.status,
-      message: 'Success',
-    };
+    return await processSuccessResponse<T>(response);
   } catch (error) {
     clearTimeout(timeoutId);
 
     // Handle abort (timeout)
     if (error instanceof DOMException && error.name === 'AbortError') {
-      if (retryCount < API_CONFIG.RETRY_ATTEMPTS) {
-        console.warn(
-          `Request timeout, retrying... (${retryCount + 1}/${API_CONFIG.RETRY_ATTEMPTS})`
-        );
-        await delay(API_CONFIG.RETRY_DELAY * (retryCount + 1));
-        return apiRequest<T>(url, options, retryCount + 1);
-      }
-      throw new NetworkError('Request timeout', url);
+      return handleRetryableError<T>(error, url, options, retryCount, 'timeout');
     }
 
     // Handle network errors
     if (error instanceof TypeError) {
-      if (retryCount < API_CONFIG.RETRY_ATTEMPTS) {
-        console.warn(`Network error, retrying... (${retryCount + 1}/${API_CONFIG.RETRY_ATTEMPTS})`);
-        await delay(API_CONFIG.RETRY_DELAY * (retryCount + 1));
-        return apiRequest<T>(url, options, retryCount + 1);
-      }
-      throw new NetworkError('Network error - please check your connection', url);
+      return handleRetryableError<T>(error, url, options, retryCount, 'network');
     }
 
     // Re-throw API errors as-is

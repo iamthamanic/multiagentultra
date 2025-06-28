@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { api, API_ENDPOINTS } from '@/config/api';
 
 interface Crew {
   id: number;
@@ -21,23 +22,21 @@ export default function CrewView({ projectId, onSelectCrew, selectedCrew }: Crew
 
   useEffect(() => {
     loadCrews();
-  }, [projectId]);
+  }, [projectId, loadCrews]);
 
-  const loadCrews = async () => {
+  const loadCrews = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:8001/api/v1/crews');
-      const data = await response.json();
-      // Filter by project if projectId is provided
-      const filteredCrews = projectId
-        ? data.filter((crew: Crew) => crew.project_id === projectId)
-        : data;
-      setCrews(filteredCrews);
+      // ✅ FIXED: Use centralized API with server-side filtering
+      const endpoint = projectId ? API_ENDPOINTS.crewsByProject(projectId) : API_ENDPOINTS.crews;
+
+      const response = await api.get<Crew[]>(endpoint);
+      setCrews(response.data);
     } catch (error) {
       console.error('Failed to load crews:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [projectId]);
 
   if (!projectId) {
     return (

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { api, API_ENDPOINTS } from '@/config/api';
 
 interface Project {
   id: number;
@@ -22,39 +23,37 @@ export default function ProjectView({ onSelectProject, selectedProject }: Projec
 
   useEffect(() => {
     loadProjects();
-  }, []);
+  }, [loadProjects]);
 
-  const loadProjects = async () => {
+  const loadProjects = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:8001/api/v1/projects');
-      const data = await response.json();
-      setProjects(data);
+      // ✅ FIXED: Use centralized API configuration
+      const response = await api.get<Project[]>(API_ENDPOINTS.projects);
+      setProjects(response.data);
     } catch (error) {
       console.error('Failed to load projects:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const createProject = async () => {
     if (!newProject.name.trim()) return;
 
     try {
-      const response = await fetch('http://localhost:8001/api/v1/projects', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newProject),
+      // ✅ FIXED: Use centralized API with proper error handling
+      await api.post(API_ENDPOINTS.projects, {
+        name: newProject.name.trim(),
+        description: newProject.description.trim() || undefined,
       });
 
-      if (response.ok) {
-        setNewProject({ name: '', description: '' });
-        setShowCreateForm(false);
-        loadProjects();
-      }
+      // Reset form and reload data
+      setNewProject({ name: '', description: '' });
+      setShowCreateForm(false);
+      await loadProjects();
     } catch (error) {
       console.error('Failed to create project:', error);
+      // TODO: Add proper error UI (toast/modal)
     }
   };
 
