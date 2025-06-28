@@ -102,7 +102,7 @@ class RAGStore(Base):
     level = Column(Enum(RAGLevel), nullable=False)
     name = Column(String(200), nullable=False)
     content = Column(Text)
-    metadata = Column(JSON)
+    meta_data = Column(JSON)
     vector_id = Column(String(100))  # Reference to vector database
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
@@ -111,6 +111,18 @@ class RAGStore(Base):
     project = relationship("Project", back_populates="rag_stores")
     crew = relationship("Crew", back_populates="rag_stores")
     agent = relationship("Agent", back_populates="rag_stores")
+
+class User(Base):
+    __tablename__ = "users"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String(50), unique=True, nullable=False)
+    email = Column(String(100), unique=True, nullable=False)
+    hashed_password = Column(String(100), nullable=False)
+    is_active = Column(Boolean, default=True)
+    is_admin = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
 class KnowledgeBase(Base):
     __tablename__ = "knowledge_bases"

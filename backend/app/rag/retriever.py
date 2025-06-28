@@ -6,11 +6,18 @@ from sqlalchemy.orm import Session
 from models.schemas import RAGStore, RAGLevel
 from app.core.config import settings
 import json
+import uuid
+import time
+import asyncio
+import threading
 
 class HierarchicalRAG:
     """Hierarchical RAG system with Project -> Crew -> Agent levels"""
     
     def __init__(self):
+        # Thread lock for thread-safe operations
+        self._lock = threading.Lock()
+        
         # Initialize ChromaDB
         self.chroma_client = chromadb.PersistentClient(
             path=settings.CHROMA_PERSIST_DIRECTORY,
@@ -37,30 +44,52 @@ class HierarchicalRAG:
         )
     
     async def add_knowledge(self, level: RAGLevel, entity_id: int, content: str, metadata: Dict[str, Any] = None) -> str:
-        """Add knowledge to the appropriate RAG level"""
-        # Generate embedding
-        embedding = self.embedding_model.encode([content])[0].tolist()
+        """Add knowledge to the appropriate RAG level - thread-safe"""
+        
+        # Generate embedding (async to not block event loop)
+        loop = asyncio.get_event_loop()
+        embedding = await loop.run_in_executor(
+            None, lambda: self.embedding_model.encode([content])[0].tolist()
+        )
         
         # Prepare metadata
         doc_metadata = {
             "entity_id": entity_id,
             "level": level.value,
+            "created_at": time.time(),
             **(metadata or {})
         }
         
-        # Choose collection based on level
-        collection = self._get_collection_by_level(level)
-        
-        # Generate unique ID
-        doc_id = f"{level.value}_{entity_id}_{len(collection.get()['ids'])}"
-        
-        # Add to ChromaDB
-        collection.add(
-            documents=[content],
-            embeddings=[embedding],
-            metadatas=[doc_metadata],
-            ids=[doc_id]
-        )
+        # Thread-safe operation
+        with self._lock:
+            # Choose collection based on level
+            collection = self._get_collection_by_level(level)
+            
+            # Generate unique ID using UUID to prevent race conditions
+            timestamp = int(time.time() * 1000)  # milliseconds
+            doc_id = f"{level.value}_{entity_id}_{timestamp}_{uuid.uuid4().hex[:8]}"
+            
+            # Add to ChromaDB
+            try:
+                collection.add(
+                    documents=[content],
+                    embeddings=[embedding],
+                    metadatas=[doc_metadata],
+                    ids=[doc_id]
+                )
+            except Exception as e:
+                # Handle potential duplicate ID errors
+                if "already exists" in str(e).lower():
+                    # Generate new ID and retry
+                    doc_id = f"{level.value}_{entity_id}_{timestamp}_{uuid.uuid4().hex}"
+                    collection.add(
+                        documents=[content],
+                        embeddings=[embedding],
+                        metadatas=[doc_metadata],
+                        ids=[doc_id]
+                    )
+                else:
+                    raise e
         
         return doc_id
     

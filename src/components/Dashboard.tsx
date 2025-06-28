@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useBackendConnection, useProjects, useCrews, useAgents } from "@/hooks/useAPI";
 
 interface Project {
   id: number;
@@ -23,51 +24,37 @@ interface Agent {
 }
 
 export default function Dashboard() {
+  const { isOnline } = useBackendConnection();
+  const { projects, loading: projectsLoading, error: projectsError, loadProjects } = useProjects();
+  const { crews, loading: crewsLoading, loadCrews } = useCrews();
+  const { agents, loading: agentsLoading, loadAgents } = useAgents();
+
   const [stats, setStats] = useState({
     projects: 0,
     crews: 0,
     agents: 0,
     activeTasks: 0
   });
-  const [recentProjects, setRecentProjects] = useState<Project[]>([]);
-  const [isOnline, setIsOnline] = useState(false);
 
+  // Load data on mount
   useEffect(() => {
-    // Check backend connection
-    fetch("http://localhost:8001/api/v1/health")
-      .then(res => res.json())
-      .then(() => setIsOnline(true))
-      .catch(() => setIsOnline(false));
+    loadProjects();
+    loadCrews();
+    loadAgents();
+  }, [loadProjects, loadCrews, loadAgents]);
 
-    // Load dashboard data
-    loadDashboardData();
-  }, []);
+  // Update stats when data changes
+  useEffect(() => {
+    setStats({
+      projects: projects.length,
+      crews: crews.length,
+      agents: agents.length,
+      activeTasks: crews.filter((c: Crew) => c.status === "active").length
+    });
+  }, [projects, crews, agents]);
 
-  const loadDashboardData = async () => {
-    try {
-      // Parallel API calls
-      const [projectsRes, crewsRes, agentsRes] = await Promise.all([
-        fetch("http://localhost:8001/api/v1/projects"),
-        fetch("http://localhost:8001/api/v1/crews"),
-        fetch("http://localhost:8001/api/v1/agents")
-      ]);
-
-      const projects = await projectsRes.json();
-      const crews = await crewsRes.json();
-      const agents = await agentsRes.json();
-
-      setStats({
-        projects: projects.length,
-        crews: crews.length,
-        agents: agents.length,
-        activeTasks: crews.filter((c: Crew) => c.status === "active").length
-      });
-
-      setRecentProjects(projects.slice(0, 3));
-    } catch (error) {
-      console.error("Failed to load dashboard data:", error);
-    }
-  };
+  const recentProjects = projects.slice(0, 3);
+  const isLoading = projectsLoading || crewsLoading || agentsLoading;
 
   return (
     <div className="space-y-6">
@@ -84,6 +71,29 @@ export default function Dashboard() {
           </span>
         </div>
       </div>
+
+      {/* Error Display */}
+      {projectsError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center">
+            <div className="text-red-600 mr-3">⚠️</div>
+            <div>
+              <h3 className="text-red-800 font-medium">Fehler beim Laden der Daten</h3>
+              <p className="text-red-600 text-sm">{projectsError}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Loading State */}
+      {isLoading && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-3"></div>
+            <span className="text-blue-800">Lade Dashboard-Daten...</span>
+          </div>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
