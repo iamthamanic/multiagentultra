@@ -1,4 +1,4 @@
-// API Configuration
+// 🔧 FIXED: API Configuration - Standardized Port 8888
 export const API_CONFIG = {
   BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8888',
   WS_URL: process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8888/ws',
@@ -7,30 +7,39 @@ export const API_CONFIG = {
   RETRY_DELAY: 1000, // 1 second
 } as const;
 
+// 🚨 Runtime validation für Environment Variables
+if (typeof window !== 'undefined') {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (baseUrl && !baseUrl.includes('8888')) {
+    console.warn('⚠️  API_URL sollte Port 8888 verwenden für Konsistenz!');
+  }
+}
+
 // API Endpoints
 export const API_ENDPOINTS = {
   // Health
   health: `${API_CONFIG.BASE_URL}/api/v1/health`,
-  
+
   // Projects
   projects: `${API_CONFIG.BASE_URL}/api/v1/projects`,
   project: (id: number) => `${API_CONFIG.BASE_URL}/api/v1/projects/${id}`,
-  
+
   // Crews
   crews: `${API_CONFIG.BASE_URL}/api/v1/crews`,
   crew: (id: number) => `${API_CONFIG.BASE_URL}/api/v1/crews/${id}`,
-  crewsByProject: (projectId: number) => `${API_CONFIG.BASE_URL}/api/v1/crews?project_id=${projectId}`,
-  
+  crewsByProject: (projectId: number) =>
+    `${API_CONFIG.BASE_URL}/api/v1/crews?project_id=${projectId}`,
+
   // Agents
   agents: `${API_CONFIG.BASE_URL}/api/v1/agents`,
   agent: (id: number) => `${API_CONFIG.BASE_URL}/api/v1/agents/${id}`,
   agentsByCrew: (crewId: number) => `${API_CONFIG.BASE_URL}/api/v1/agents?crew_id=${crewId}`,
-  
+
   // Tasks
   tasks: `${API_CONFIG.BASE_URL}/api/v1/tasks`,
   task: (id: number) => `${API_CONFIG.BASE_URL}/api/v1/tasks/${id}`,
   tasksByCrew: (crewId: number) => `${API_CONFIG.BASE_URL}/api/v1/tasks?crew_id=${crewId}`,
-  
+
   // RAG
   ragStores: `${API_CONFIG.BASE_URL}/api/v1/rag/stores`,
   ragSearch: `${API_CONFIG.BASE_URL}/api/v1/rag/search`,
@@ -51,7 +60,10 @@ export class APIError extends Error {
 }
 
 export class NetworkError extends Error {
-  constructor(message: string, public endpoint?: string) {
+  constructor(
+    message: string,
+    public endpoint?: string
+  ) {
     super(message);
     this.name = 'NetworkError';
   }
@@ -92,7 +104,7 @@ export async function apiRequest<T = any>(
     if (!response.ok) {
       const errorText = await response.text();
       let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-      
+
       try {
         const errorJson = JSON.parse(errorText);
         errorMessage = errorJson.detail || errorJson.message || errorMessage;
@@ -111,14 +123,15 @@ export async function apiRequest<T = any>(
       status: response.status,
       message: 'Success',
     };
-
   } catch (error) {
     clearTimeout(timeoutId);
 
     // Handle abort (timeout)
     if (error instanceof DOMException && error.name === 'AbortError') {
       if (retryCount < API_CONFIG.RETRY_ATTEMPTS) {
-        console.warn(`Request timeout, retrying... (${retryCount + 1}/${API_CONFIG.RETRY_ATTEMPTS})`);
+        console.warn(
+          `Request timeout, retrying... (${retryCount + 1}/${API_CONFIG.RETRY_ATTEMPTS})`
+        );
         await delay(API_CONFIG.RETRY_DELAY * (retryCount + 1));
         return apiRequest<T>(url, options, retryCount + 1);
       }
@@ -147,24 +160,24 @@ export async function apiRequest<T = any>(
 
 // Convenience methods
 export const api = {
-  get: <T = any>(url: string, options?: RequestInit) => 
+  get: <T = any>(url: string, options?: RequestInit) =>
     apiRequest<T>(url, { method: 'GET', ...options }),
-    
-  post: <T = any>(url: string, data?: any, options?: RequestInit) => 
+
+  post: <T = any>(url: string, data?: any, options?: RequestInit) =>
     apiRequest<T>(url, {
       method: 'POST',
       body: data ? JSON.stringify(data) : undefined,
       ...options,
     }),
-    
-  put: <T = any>(url: string, data?: any, options?: RequestInit) => 
+
+  put: <T = any>(url: string, data?: any, options?: RequestInit) =>
     apiRequest<T>(url, {
       method: 'PUT',
       body: data ? JSON.stringify(data) : undefined,
       ...options,
     }),
-    
-  delete: <T = any>(url: string, options?: RequestInit) => 
+
+  delete: <T = any>(url: string, options?: RequestInit) =>
     apiRequest<T>(url, { method: 'DELETE', ...options }),
 };
 

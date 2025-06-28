@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.api.endpoints import projects, crews, agents, tasks, rag, auth
+from app.api.endpoints import projects_simple as projects, crews, agents, tasks, rag, auth, live_demo
 
 router = APIRouter()
 
 # Include all route modules
 router.include_router(auth.router, prefix="/auth", tags=["authentication"])
+router.include_router(live_demo.router, prefix="/demo", tags=["demo"])
 router.include_router(projects.router, prefix="/projects", tags=["projects"])
 router.include_router(crews.router, prefix="/crews", tags=["crews"])
 router.include_router(agents.router, prefix="/agents", tags=["agents"])

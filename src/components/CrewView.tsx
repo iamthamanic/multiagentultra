@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 interface Crew {
   id: number;
@@ -25,15 +25,15 @@ export default function CrewView({ projectId, onSelectCrew, selectedCrew }: Crew
 
   const loadCrews = async () => {
     try {
-      const response = await fetch("http://localhost:8001/api/v1/crews");
+      const response = await fetch('http://localhost:8001/api/v1/crews');
       const data = await response.json();
       // Filter by project if projectId is provided
-      const filteredCrews = projectId 
+      const filteredCrews = projectId
         ? data.filter((crew: Crew) => crew.project_id === projectId)
         : data;
       setCrews(filteredCrews);
     } catch (error) {
-      console.error("Failed to load crews:", error);
+      console.error('Failed to load crews:', error);
     } finally {
       setLoading(false);
     }
@@ -45,9 +45,7 @@ export default function CrewView({ projectId, onSelectCrew, selectedCrew }: Crew
         <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <span className="text-4xl">👥</span>
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
-          Kein Projekt ausgewählt
-        </h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">Kein Projekt ausgewählt</h3>
         <p className="text-gray-600">
           Bitte wähle zuerst ein Projekt aus, um dessen Crews zu verwalten
         </p>
@@ -69,9 +67,7 @@ export default function CrewView({ projectId, onSelectCrew, selectedCrew }: Crew
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Crews</h2>
-          <p className="text-gray-600">
-            Verwalte die Agent-Teams für Projekt #{projectId}
-          </p>
+          <p className="text-gray-600">Verwalte die Agent-Teams für Projekt #{projectId}</p>
         </div>
         <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
           + Neue Crew
@@ -80,13 +76,13 @@ export default function CrewView({ projectId, onSelectCrew, selectedCrew }: Crew
 
       {/* Crews Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {crews.map((crew) => (
+        {crews.map(crew => (
           <div
             key={crew.id}
             onClick={() => onSelectCrew(crew.id)}
             className={`bg-white p-6 rounded-lg shadow-sm border cursor-pointer transition-all hover:shadow-md ${
-              selectedCrew === crew.id 
-                ? 'ring-2 ring-green-500 border-green-500' 
+              selectedCrew === crew.id
+                ? 'ring-2 ring-green-500 border-green-500'
                 : 'hover:border-gray-300'
             }`}
           >
@@ -94,19 +90,19 @@ export default function CrewView({ projectId, onSelectCrew, selectedCrew }: Crew
               <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">👥</span>
               </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                crew.status === 'active' 
-                  ? 'bg-green-100 text-green-700' 
-                  : 'bg-gray-100 text-gray-700'
-              }`}>
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  crew.status === 'active'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-gray-100 text-gray-700'
+                }`}
+              >
                 {crew.status}
               </span>
             </div>
-            
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {crew.name}
-            </h3>
-            
+
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{crew.name}</h3>
+
             <div className="flex items-center justify-between text-sm text-gray-500">
               <span>Crew #{crew.id}</span>
               <div className="flex items-center space-x-2">
@@ -116,7 +112,7 @@ export default function CrewView({ projectId, onSelectCrew, selectedCrew }: Crew
             </div>
           </div>
         ))}
-        
+
         {/* Empty State */}
         {crews.length === 0 && (
           <div className="col-span-full">
@@ -124,12 +120,8 @@ export default function CrewView({ projectId, onSelectCrew, selectedCrew }: Crew
               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-4xl">👥</span>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Keine Crews vorhanden
-              </h3>
-              <p className="text-gray-600 mb-6">
-                Erstelle die erste Crew für dieses Projekt
-              </p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Keine Crews vorhanden</h3>
+              <p className="text-gray-600 mb-6">Erstelle die erste Crew für dieses Projekt</p>
               <button className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
                 Erste Crew erstellen
               </button>
@@ -147,9 +139,7 @@ export default function CrewView({ projectId, onSelectCrew, selectedCrew }: Crew
                 <span className="text-white font-bold text-sm">✓</span>
               </div>
               <div>
-                <p className="font-medium text-green-900">
-                  Crew #{selectedCrew} ausgewählt
-                </p>
+                <p className="font-medium text-green-900">Crew #{selectedCrew} ausgewählt</p>
                 <p className="text-sm text-green-700">
                   Du kannst jetzt Agents für diese Crew verwalten
                 </p>

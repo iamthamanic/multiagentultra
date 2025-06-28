@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useBackendConnection, useProjects, useCrews, useAgents } from "@/hooks/useAPI";
+import { useState, useEffect } from 'react';
+import { useBackendConnection, useProjects, useCrews, useAgents } from '@/hooks/useAPI';
 
 interface Project {
   id: number;
@@ -33,7 +33,7 @@ export default function Dashboard() {
     projects: 0,
     crews: 0,
     agents: 0,
-    activeTasks: 0
+    activeTasks: 0,
   });
 
   // Load data on mount
@@ -49,7 +49,7 @@ export default function Dashboard() {
       projects: projects.length,
       crews: crews.length,
       agents: agents.length,
-      activeTasks: crews.filter((c: Crew) => c.status === "active").length
+      activeTasks: crews.filter((c: Crew) => c.status === 'active').length,
     });
   }, [projects, crews, agents]);
 
@@ -154,8 +154,11 @@ export default function Dashboard() {
         <div className="p-6">
           {recentProjects.length > 0 ? (
             <div className="space-y-4">
-              {recentProjects.map((project) => (
-                <div key={project.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              {recentProjects.map(project => (
+                <div
+                  key={project.id}
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                >
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
                       <span className="text-white font-semibold">{project.name.charAt(0)}</span>
@@ -166,11 +169,13 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      project.status === 'active' 
-                        ? 'bg-green-100 text-green-700' 
-                        : 'bg-gray-100 text-gray-700'
-                    }`}>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        project.status === 'active'
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-gray-100 text-gray-700'
+                      }`}
+                    >
                       {project.status}
                     </span>
                   </div>
@@ -200,13 +205,13 @@ export default function Dashboard() {
               <p className="font-medium text-gray-900">Neues Projekt</p>
               <p className="text-sm text-gray-600">Erstelle ein neues MultiAgent Projekt</p>
             </button>
-            
+
             <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors text-center">
               <div className="text-2xl mb-2">👥</div>
               <p className="font-medium text-gray-900">Neue Crew</p>
               <p className="text-sm text-gray-600">Füge eine neue Agent-Crew hinzu</p>
             </button>
-            
+
             <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-colors text-center">
               <div className="text-2xl mb-2">🧠</div>
               <p className="font-medium text-gray-900">Knowledge Base</p>

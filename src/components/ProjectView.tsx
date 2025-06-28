@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 interface Project {
   id: number;
@@ -17,7 +17,7 @@ interface ProjectViewProps {
 export default function ProjectView({ onSelectProject, selectedProject }: ProjectViewProps) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [newProject, setNewProject] = useState({ name: "", description: "" });
+  const [newProject, setNewProject] = useState({ name: '', description: '' });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,11 +26,11 @@ export default function ProjectView({ onSelectProject, selectedProject }: Projec
 
   const loadProjects = async () => {
     try {
-      const response = await fetch("http://localhost:8001/api/v1/projects");
+      const response = await fetch('http://localhost:8001/api/v1/projects');
       const data = await response.json();
       setProjects(data);
     } catch (error) {
-      console.error("Failed to load projects:", error);
+      console.error('Failed to load projects:', error);
     } finally {
       setLoading(false);
     }
@@ -40,21 +40,21 @@ export default function ProjectView({ onSelectProject, selectedProject }: Projec
     if (!newProject.name.trim()) return;
 
     try {
-      const response = await fetch("http://localhost:8001/api/v1/projects", {
-        method: "POST",
+      const response = await fetch('http://localhost:8001/api/v1/projects', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(newProject),
       });
 
       if (response.ok) {
-        setNewProject({ name: "", description: "" });
+        setNewProject({ name: '', description: '' });
         setShowCreateForm(false);
         loadProjects();
       }
     } catch (error) {
-      console.error("Failed to create project:", error);
+      console.error('Failed to create project:', error);
     }
   };
 
@@ -88,24 +88,20 @@ export default function ProjectView({ onSelectProject, selectedProject }: Projec
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Neues Projekt erstellen</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Projektname
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Projektname</label>
               <input
                 type="text"
                 value={newProject.name}
-                onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
+                onChange={e => setNewProject({ ...newProject, name: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="z.B. E-Commerce Chatbot"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Beschreibung
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Beschreibung</label>
               <textarea
                 value={newProject.description}
-                onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
+                onChange={e => setNewProject({ ...newProject, description: e.target.value })}
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Kurze Beschreibung des Projekts..."
@@ -131,13 +127,13 @@ export default function ProjectView({ onSelectProject, selectedProject }: Projec
 
       {/* Projects Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => (
+        {projects.map(project => (
           <div
             key={project.id}
             onClick={() => onSelectProject(project.id)}
             className={`bg-white p-6 rounded-lg shadow-sm border cursor-pointer transition-all hover:shadow-md ${
-              selectedProject === project.id 
-                ? 'ring-2 ring-blue-500 border-blue-500' 
+              selectedProject === project.id
+                ? 'ring-2 ring-blue-500 border-blue-500'
                 : 'hover:border-gray-300'
             }`}
           >
@@ -147,25 +143,23 @@ export default function ProjectView({ onSelectProject, selectedProject }: Projec
                   {project.name.charAt(0).toUpperCase()}
                 </span>
               </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                project.status === 'active' 
-                  ? 'bg-green-100 text-green-700' 
-                  : 'bg-gray-100 text-gray-700'
-              }`}>
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  project.status === 'active'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-gray-100 text-gray-700'
+                }`}
+              >
                 {project.status}
               </span>
             </div>
-            
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {project.name}
-            </h3>
-            
+
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{project.name}</h3>
+
             {project.description && (
-              <p className="text-gray-600 text-sm mb-4">
-                {project.description}
-              </p>
+              <p className="text-gray-600 text-sm mb-4">{project.description}</p>
             )}
-            
+
             <div className="flex items-center justify-between text-sm text-gray-500">
               <span>Projekt #{project.id}</span>
               <div className="flex items-center space-x-2">
@@ -175,7 +169,7 @@ export default function ProjectView({ onSelectProject, selectedProject }: Projec
             </div>
           </div>
         ))}
-        
+
         {/* Empty State */}
         {projects.length === 0 && (
           <div className="col-span-full">
@@ -183,12 +177,8 @@ export default function ProjectView({ onSelectProject, selectedProject }: Projec
               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-4xl">📁</span>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Keine Projekte vorhanden
-              </h3>
-              <p className="text-gray-600 mb-6">
-                Erstelle dein erstes MultiAgent Ultra Projekt
-              </p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Keine Projekte vorhanden</h3>
+              <p className="text-gray-600 mb-6">Erstelle dein erstes MultiAgent Ultra Projekt</p>
               <button
                 onClick={() => setShowCreateForm(true)}
                 className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -209,9 +199,7 @@ export default function ProjectView({ onSelectProject, selectedProject }: Projec
                 <span className="text-white font-bold text-sm">✓</span>
               </div>
               <div>
-                <p className="font-medium text-blue-900">
-                  Projekt #{selectedProject} ausgewählt
-                </p>
+                <p className="font-medium text-blue-900">Projekt #{selectedProject} ausgewählt</p>
                 <p className="text-sm text-blue-700">
                   Du kannst jetzt Crews für dieses Projekt verwalten
                 </p>

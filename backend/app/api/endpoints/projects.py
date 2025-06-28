@@ -18,7 +18,7 @@ class ProjectCreate(BaseModel):
         return v.strip()
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "name": "AI Research Project",
                 "description": "A project for AI research and development"

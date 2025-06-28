@@ -4,10 +4,15 @@ from typing import List, Dict, Any, Optional
 from sqlalchemy.orm import Session, joinedload
 from models.schemas import Crew as CrewModel, Agent as AgentModel, Task as TaskModel
 from app.rag.retriever import HierarchicalRAG
+from app.core.websocket import ws_manager, LogType
+from app.crew.live_agent import LiveLogAgent
 import json
 import time
 import asyncio
 from datetime import datetime, timedelta
+import logging
+
+logger = logging.getLogger(__name__)
 
 class CrewActivity:
     """Track crew activity for memory management"""
@@ -97,15 +102,18 @@ AGENT CONTEXT:
 {agent_context}
         """
         
-        # Create agent with hierarchical context
-        agent = Agent(
+        # Create LiveLogAgent with hierarchical context
+        agent = LiveLogAgent(
             role=agent_model.role,
             goal=agent_model.goal,
             backstory=f"{agent_model.backstory}\n\nCONTEXT:\n{full_context}",
             tools=self._load_agent_tools(agent_model.tools),
             llm=self._get_agent_llm(agent_model.llm_config),
             verbose=True,
-            memory=True
+            memory=True,
+            project_id=agent_model.crew.project_id if agent_model.crew else None,
+            crew_id=agent_model.crew_id,
+            agent_id=agent_model.id
         )
         
         return agent

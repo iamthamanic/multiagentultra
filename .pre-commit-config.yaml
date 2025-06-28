@@ -1,0 +1,60 @@
+# 🔧 Pre-commit Hooks für Code-Qualität
+repos:
+  # ESLint für TypeScript/JavaScript
+  - repo: local
+    hooks:
+      - id: eslint
+        name: ESLint Fix
+        entry: npm run lint:fix
+        language: system
+        files: \.(js|ts|tsx)$
+        pass_filenames: false
+
+  # Prettier für Code-Formatierung
+  - repo: local
+    hooks:
+      - id: prettier
+        name: Prettier Format
+        entry: npm run format
+        language: system
+        files: \.(js|ts|tsx|json|md)$
+        pass_filenames: false
+
+  # TypeScript Type Check
+  - repo: local
+    hooks:
+      - id: typescript
+        name: TypeScript Check
+        entry: npm run type-check
+        language: system
+        files: \.(ts|tsx)$
+        pass_filenames: false
+
+  # Python Backend Hooks
+  - repo: local
+    hooks:
+      - id: python-black
+        name: Black Python Formatter
+        entry: bash -c 'cd backend && black --check .'
+        language: system
+        files: \.py$
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: python-isort
+        name: Python Import Sort
+        entry: bash -c 'cd backend && isort --check-only .'
+        language: system
+        files: \.py$
+        pass_filenames: false
+
+  # Verhindere Commits von Secrets
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: ['--maxkb=1000'] # Max 1MB files
+      - id: trailing-whitespace
+      - id: end-of-file-fixer

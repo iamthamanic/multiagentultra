@@ -1,17 +1,18 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import Dashboard from "@/components/Dashboard";
-import ProjectView from "@/components/ProjectView";
-import CrewView from "@/components/CrewView";
-import AgentView from "@/components/AgentView";
-import KnowledgeView from "@/components/KnowledgeView";
+import { useState } from 'react';
+import Image from 'next/image';
+import Dashboard from '@/components/Dashboard';
+import ProjectView from '@/components/ProjectView';
+import CrewView from '@/components/CrewView';
+import AgentView from '@/components/AgentView';
+import KnowledgeView from '@/components/KnowledgeView';
+import ArchitectView from '@/components/ArchitectView';
 
-type ViewType = "dashboard" | "projects" | "crews" | "agents" | "knowledge";
+type ViewType = 'architect' | 'dashboard' | 'projects' | 'crews' | 'agents' | 'knowledge';
 
 export default function Home() {
-  const [currentView, setCurrentView] = useState<ViewType>("dashboard");
+  const [currentView, setCurrentView] = useState<ViewType>('architect');
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
   const [selectedCrew, setSelectedCrew] = useState<number | null>(null);
 
@@ -30,9 +31,7 @@ export default function Home() {
             />
           </div>
           <div className="flex items-center space-x-4">
-            <div className="text-sm text-gray-500">
-              Backend: http://localhost:8001
-            </div>
+            <div className="text-sm text-gray-500">Backend: http://localhost:8900</div>
             <div className="w-3 h-3 bg-green-400 rounded-full"></div>
           </div>
         </div>
@@ -45,11 +44,23 @@ export default function Home() {
             <ul className="space-y-2">
               <li>
                 <button
-                  onClick={() => setCurrentView("dashboard")}
+                  onClick={() => setCurrentView('architect')}
                   className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                    currentView === "dashboard"
-                      ? "bg-blue-100 text-blue-700"
-                      : "text-gray-600 hover:bg-gray-100"
+                    currentView === 'architect'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  🏗️ Architect
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setCurrentView('dashboard')}
+                  className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                    currentView === 'dashboard'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-600 hover:bg-gray-100'
                   }`}
                 >
                   📊 Dashboard
@@ -57,11 +68,11 @@ export default function Home() {
               </li>
               <li>
                 <button
-                  onClick={() => setCurrentView("projects")}
+                  onClick={() => setCurrentView('projects')}
                   className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                    currentView === "projects"
-                      ? "bg-blue-100 text-blue-700"
-                      : "text-gray-600 hover:bg-gray-100"
+                    currentView === 'projects'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-600 hover:bg-gray-100'
                   }`}
                 >
                   📁 Projekte
@@ -69,11 +80,11 @@ export default function Home() {
               </li>
               <li>
                 <button
-                  onClick={() => setCurrentView("crews")}
+                  onClick={() => setCurrentView('crews')}
                   className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                    currentView === "crews"
-                      ? "bg-blue-100 text-blue-700"
-                      : "text-gray-600 hover:bg-gray-100"
+                    currentView === 'crews'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-600 hover:bg-gray-100'
                   }`}
                 >
                   👥 Crews
@@ -81,11 +92,11 @@ export default function Home() {
               </li>
               <li>
                 <button
-                  onClick={() => setCurrentView("agents")}
+                  onClick={() => setCurrentView('agents')}
                   className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                    currentView === "agents"
-                      ? "bg-blue-100 text-blue-700"
-                      : "text-gray-600 hover:bg-gray-100"
+                    currentView === 'agents'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-600 hover:bg-gray-100'
                   }`}
                 >
                   🤖 Agents
@@ -93,11 +104,11 @@ export default function Home() {
               </li>
               <li>
                 <button
-                  onClick={() => setCurrentView("knowledge")}
+                  onClick={() => setCurrentView('knowledge')}
                   className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                    currentView === "knowledge"
-                      ? "bg-blue-100 text-blue-700"
-                      : "text-gray-600 hover:bg-gray-100"
+                    currentView === 'knowledge'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-600 hover:bg-gray-100'
                   }`}
                 >
                   🧠 Knowledge RAG
@@ -109,26 +120,20 @@ export default function Home() {
 
         {/* Main Content */}
         <main className="flex-1 p-6">
-          {currentView === "dashboard" && <Dashboard />}
-          {currentView === "projects" && (
-            <ProjectView 
-              onSelectProject={setSelectedProject}
-              selectedProject={selectedProject}
-            />
+          {currentView === 'architect' && <ArchitectView />}
+          {currentView === 'dashboard' && <Dashboard />}
+          {currentView === 'projects' && (
+            <ProjectView onSelectProject={setSelectedProject} selectedProject={selectedProject} />
           )}
-          {currentView === "crews" && (
-            <CrewView 
+          {currentView === 'crews' && (
+            <CrewView
               projectId={selectedProject}
               onSelectCrew={setSelectedCrew}
               selectedCrew={selectedCrew}
             />
           )}
-          {currentView === "agents" && (
-            <AgentView 
-              crewId={selectedCrew}
-            />
-          )}
-          {currentView === "knowledge" && <KnowledgeView />}
+          {currentView === 'agents' && <AgentView crewId={selectedCrew} />}
+          {currentView === 'knowledge' && <KnowledgeView />}
         </main>
       </div>
     </div>

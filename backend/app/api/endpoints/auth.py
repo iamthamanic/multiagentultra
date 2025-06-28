@@ -15,7 +15,7 @@ class UserCreate(BaseModel):
     password: str = Field(..., min_length=8, description="Password")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "email": "user@example.com",
                 "username": "johndoe",
@@ -28,7 +28,7 @@ class UserLogin(BaseModel):
     password: str = Field(..., description="Password")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "email": "user@example.com",
                 "password": "SecurePass123"

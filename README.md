@@ -5,6 +5,7 @@ A powerful multi-agent system built with Next.js and FastAPI, featuring CrewAI i
 ## 🚀 Features
 
 ### Frontend (Next.js 15.3.4)
+
 - **Modern React 19** with TypeScript and Tailwind CSS
 - **Real-time Dashboard** with live backend connection monitoring
 - **Multi-view Interface**: Projects, Crews, Agents, Knowledge Management
@@ -13,6 +14,7 @@ A powerful multi-agent system built with Next.js and FastAPI, featuring CrewAI i
 - **WebSocket Support** for real-time agent status updates
 
 ### Backend (FastAPI)
+
 - **Multi-Agent Orchestration** powered by CrewAI
 - **RAG System** with ChromaDB for vector search and knowledge retrieval
 - **RESTful API** with comprehensive endpoints for all entities
@@ -45,12 +47,14 @@ multiagent-ultra/
 ## 🛠️ Technologies
 
 **Frontend:**
+
 - Next.js 15.3.4 with Turbopack
 - React 19 with TypeScript
 - Tailwind CSS 4
 - WebSocket client for real-time updates
 
 **Backend:**
+
 - FastAPI 0.104.1 with Uvicorn
 - CrewAI 0.134.0 for multi-agent orchestration
 - ChromaDB for vector database and RAG
@@ -61,24 +65,28 @@ multiagent-ultra/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - Python 3.11+
 - Git
 
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
 git clone <repository-url>
 cd multiagent-ultra
 ```
 
 2. **Frontend Setup**
+
 ```bash
 npm install
 ```
 
 3. **Backend Setup**
+
 ```bash
 cd backend
 python -m venv venv
@@ -89,6 +97,7 @@ pip install -r requirements.txt
 ### Running the Application
 
 1. **Start the Backend** (Port 8888)
+
 ```bash
 cd backend
 source venv/bin/activate
@@ -96,11 +105,13 @@ python main.py
 ```
 
 2. **Start the Frontend** (Port 3000)
+
 ```bash
 npm run dev
 ```
 
 3. **Access the Application**
+
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8888
 - API Documentation: http://localhost:8888/docs
@@ -108,10 +119,12 @@ npm run dev
 ## 📡 API Endpoints
 
 ### Core Endpoints
+
 - `GET /` - Health check
 - `GET /api/v1/health` - Detailed health status
 
 ### Projects
+
 - `GET /api/v1/projects` - List all projects
 - `POST /api/v1/projects` - Create new project
 - `GET /api/v1/projects/{id}` - Get project details
@@ -119,54 +132,127 @@ npm run dev
 - `DELETE /api/v1/projects/{id}` - Delete project
 
 ### Crews
+
 - `GET /api/v1/crews` - List all crews
 - `POST /api/v1/crews` - Create new crew
 - `GET /api/v1/crews/{id}` - Get crew details
 
 ### Agents
+
 - `GET /api/v1/agents` - List all agents
 - `POST /api/v1/agents` - Create new agent
 - `GET /api/v1/agents/{id}` - Get agent details
 
 ### Tasks
+
 - `GET /api/v1/tasks` - List all tasks
 - `POST /api/v1/tasks` - Create new task
 - `GET /api/v1/tasks/{id}` - Get task details
 
 ### RAG System
+
 - `GET /api/v1/rag/stores` - List knowledge stores
 - `POST /api/v1/rag/upload` - Upload documents
 - `POST /api/v1/rag/search` - Search knowledge base
 - `GET /api/v1/rag/stats` - Get RAG statistics
 
-## 🧪 Testing
+## 🧪 Testing & Code Quality
 
-### Backend Tests
+### 🔧 Automatic Code Quality (Empfohlen)
+
+```bash
+# Alles auf einmal: ESLint Fix + Prettier + TypeScript Check
+npm run code-quality
+
+# Vor jedem Commit
+npm run pre-commit
+```
+
+### 🎨 Frontend Quality Checks
+
+```bash
+# ESLint mit Auto-Fix
+npm run lint:fix
+
+# Prettier Formatierung
+npm run format
+
+# TypeScript Type Check
+npm run type-check
+
+# Build Test
+npm run build
+```
+
+### 🐍 Backend Quality Checks
+
 ```bash
 cd backend
+
+# Install development dependencies
+pip install -r requirements-dev.txt
+
+# Code formatting
+black .
+isort .
+
+# Linting
+flake8 . --max-line-length=100
+
+# Tests
 pytest
 ```
 
-### Frontend Linting
+### 🚀 Pre-commit Hooks (Einmalig einrichten)
+
 ```bash
-npm run lint
+# Install pre-commit
+pip install pre-commit
+
+# Setup hooks
+pre-commit install
+
+# Teste alle Files
+pre-commit run --all-files
 ```
 
 ## 🔧 Configuration
 
 ### Environment Variables
+
 Create `.env.local` in the root directory:
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8888
 NEXT_PUBLIC_WS_URL=ws://localhost:8888/ws
 ```
 
 ### Backend Configuration
+
 The backend configuration is managed in `backend/app/core/config.py`
 
 ## 📦 Recent Updates
 
+### Version 1.2 - Code Quality & Production Ready (2025-06-28)
+
+- 🔧 **Code Quality Pipeline**: Comprehensive ESLint, Prettier, TypeScript setup
+- 🚨 **Strict Linting Rules**: 3-tier approach (Errors, Best Practices, Style)
+- 🔄 **Pre-commit Hooks**: Automated quality checks before every commit
+- 🎯 **API Standardization**: All hardcoded URLs removed, centralized configuration
+- 📦 **Dependency Cleanup**: Separate production/development requirements
+- 🔒 **Security**: Added vulnerability scanning and secret detection
+- 🤖 **CI/CD Pipeline**: GitHub Actions for automated testing and quality checks
+
+### Version 1.2 - Critical Bug Fixes
+
+- ✅ **Port Standardization**: Fixed inconsistent API endpoints (8888/8900/8001 → 8888)
+- ✅ **TODO Implementation**: Completed missing project creation and mission briefing
+- ✅ **Pydantic v2 Migration**: Fixed deprecated `schema_extra` warnings
+- ✅ **Environment Variables**: Proper .env configuration with validation
+- ✅ **Import Optimization**: Centralized API configuration across all components
+
 ### Version 1.1 Features
+
 - ✅ **Port Configuration**: Changed backend to port 8888 to avoid conflicts
 - ✅ **API Integration**: Complete frontend-backend connection with real data
 - ✅ **Enhanced Dashboard**: Real-time connection monitoring and status updates
@@ -175,7 +261,8 @@ The backend configuration is managed in `backend/app/core/config.py`
 - ✅ **RAG Integration**: Full knowledge management system with vector search
 - ✅ **WebSocket Support**: Real-time agent status and task updates
 
-### Bug Fixes
+### Bug Fixes Archive
+
 - Fixed dependency conflicts in requirements.txt
 - Resolved Pydantic v2 configuration warnings
 - Improved database initialization and connection handling
@@ -199,5 +286,8 @@ For support and questions, please open an issue in the repository.
 
 ---
 
-**Last Updated**: June 2025 - Version 1.1
-**Status**: Active Development
+**Last Updated**: June 2025 - Version 1.2 (Production Ready)
+**Status**: Production Ready with Continuous Development
+**Code Quality**: ✅ Fully Automated (ESLint + Prettier + TypeScript + Pre-commit)
+**Test Coverage**: ✅ Backend Test Suite + Frontend Type Safety
+**Security**: ✅ Vulnerability Scanning + Secret Detection

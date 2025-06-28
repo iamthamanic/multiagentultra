@@ -7,36 +7,39 @@ export function useAPI<T = any>() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const request = useCallback(async (
-    apiCall: () => Promise<{ data: T }>,
-    onSuccess?: (data: T) => void,
-    onError?: (error: string) => void
-  ) => {
-    setLoading(true);
-    setError(null);
+  const request = useCallback(
+    async (
+      apiCall: () => Promise<{ data: T }>,
+      onSuccess?: (data: T) => void,
+      onError?: (error: string) => void
+    ) => {
+      setLoading(true);
+      setError(null);
 
-    try {
-      const response = await apiCall();
-      setData(response.data);
-      onSuccess?.(response.data);
-    } catch (error) {
-      let errorMessage = 'An unexpected error occurred';
-      
-      if (error instanceof APIError) {
-        errorMessage = `Server Error: ${error.message}`;
-      } else if (error instanceof NetworkError) {
-        errorMessage = `Network Error: ${error.message}`;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
+      try {
+        const response = await apiCall();
+        setData(response.data);
+        onSuccess?.(response.data);
+      } catch (error) {
+        let errorMessage = 'An unexpected error occurred';
+
+        if (error instanceof APIError) {
+          errorMessage = `Server Error: ${error.message}`;
+        } else if (error instanceof NetworkError) {
+          errorMessage = `Network Error: ${error.message}`;
+        } else if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+
+        setError(errorMessage);
+        onError?.(errorMessage);
+        console.error('API Error:', error);
+      } finally {
+        setLoading(false);
       }
-      
-      setError(errorMessage);
-      onError?.(errorMessage);
-      console.error('API Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   const reset = useCallback(() => {
     setData(null);
@@ -69,9 +72,9 @@ export function useBackendConnection() {
   // Check connection on mount and periodically
   useEffect(() => {
     checkConnection();
-    
+
     const interval = setInterval(checkConnection, 30000); // Check every 30 seconds
-    
+
     return () => clearInterval(interval);
   }, [checkConnection]);
 
@@ -86,13 +89,19 @@ export function useProjects() {
     return request(() => api.get('/api/v1/projects'));
   }, [request]);
 
-  const createProject = useCallback((projectData: { name: string; description?: string }) => {
-    return request(() => api.post('/api/v1/projects', projectData));
-  }, [request]);
+  const createProject = useCallback(
+    (projectData: { name: string; description?: string }) => {
+      return request(() => api.post('/api/v1/projects', projectData));
+    },
+    [request]
+  );
 
-  const deleteProject = useCallback((id: number) => {
-    return request(() => api.delete(`/api/v1/projects/${id}`));
-  }, [request]);
+  const deleteProject = useCallback(
+    (id: number) => {
+      return request(() => api.delete(`/api/v1/projects/${id}`));
+    },
+    [request]
+  );
 
   return {
     projects: data || [],
@@ -113,18 +122,19 @@ export function useCrews(projectId?: number) {
     return request(() => api.get(url));
   }, [request, projectId]);
 
-  const createCrew = useCallback((crewData: { 
-    project_id: number; 
-    name: string; 
-    description?: string; 
-    crew_type?: string; 
-  }) => {
-    return request(() => api.post('/api/v1/crews', crewData));
-  }, [request]);
+  const createCrew = useCallback(
+    (crewData: { project_id: number; name: string; description?: string; crew_type?: string }) => {
+      return request(() => api.post('/api/v1/crews', crewData));
+    },
+    [request]
+  );
 
-  const deleteCrew = useCallback((id: number) => {
-    return request(() => api.delete(`/api/v1/crews/${id}`));
-  }, [request]);
+  const deleteCrew = useCallback(
+    (id: number) => {
+      return request(() => api.delete(`/api/v1/crews/${id}`));
+    },
+    [request]
+  );
 
   return {
     crews: data || [],
@@ -145,19 +155,25 @@ export function useAgents(crewId?: number) {
     return request(() => api.get(url));
   }, [request, crewId]);
 
-  const createAgent = useCallback((agentData: {
-    crew_id: number;
-    name: string;
-    role: string;
-    goal?: string;
-    backstory?: string;
-  }) => {
-    return request(() => api.post('/api/v1/agents', agentData));
-  }, [request]);
+  const createAgent = useCallback(
+    (agentData: {
+      crew_id: number;
+      name: string;
+      role: string;
+      goal?: string;
+      backstory?: string;
+    }) => {
+      return request(() => api.post('/api/v1/agents', agentData));
+    },
+    [request]
+  );
 
-  const deleteAgent = useCallback((id: number) => {
-    return request(() => api.delete(`/api/v1/agents/${id}`));
-  }, [request]);
+  const deleteAgent = useCallback(
+    (id: number) => {
+      return request(() => api.delete(`/api/v1/agents/${id}`));
+    },
+    [request]
+  );
 
   return {
     agents: data || [],
@@ -178,23 +194,32 @@ export function useTasks(crewId?: number) {
     return request(() => api.get(url));
   }, [request, crewId]);
 
-  const createTask = useCallback((taskData: {
-    crew_id: number;
-    agent_id?: number;
-    name: string;
-    description?: string;
-    priority?: number;
-  }) => {
-    return request(() => api.post('/api/v1/tasks', taskData));
-  }, [request]);
+  const createTask = useCallback(
+    (taskData: {
+      crew_id: number;
+      agent_id?: number;
+      name: string;
+      description?: string;
+      priority?: number;
+    }) => {
+      return request(() => api.post('/api/v1/tasks', taskData));
+    },
+    [request]
+  );
 
-  const updateTask = useCallback((id: number, updateData: any) => {
-    return request(() => api.put(`/api/v1/tasks/${id}`, updateData));
-  }, [request]);
+  const updateTask = useCallback(
+    (id: number, updateData: any) => {
+      return request(() => api.put(`/api/v1/tasks/${id}`, updateData));
+    },
+    [request]
+  );
 
-  const executeTask = useCallback((id: number) => {
-    return request(() => api.post(`/api/v1/tasks/${id}/execute`));
-  }, [request]);
+  const executeTask = useCallback(
+    (id: number) => {
+      return request(() => api.post(`/api/v1/tasks/${id}/execute`));
+    },
+    [request]
+  );
 
   return {
     tasks: data || [],
@@ -211,27 +236,33 @@ export function useTasks(crewId?: number) {
 export function useRAG() {
   const { data, loading, error, request, reset } = useAPI<any>();
 
-  const searchRAG = useCallback((searchData: {
-    query: string;
-    level?: string;
-    project_id?: number;
-    crew_id?: number;
-    agent_id?: number;
-    top_k?: number;
-  }) => {
-    return request(() => api.post('/api/v1/rag/search', searchData));
-  }, [request]);
+  const searchRAG = useCallback(
+    (searchData: {
+      query: string;
+      level?: string;
+      project_id?: number;
+      crew_id?: number;
+      agent_id?: number;
+      top_k?: number;
+    }) => {
+      return request(() => api.post('/api/v1/rag/search', searchData));
+    },
+    [request]
+  );
 
-  const addKnowledge = useCallback((knowledgeData: {
-    level: string;
-    name: string;
-    content: string;
-    project_id?: number;
-    crew_id?: number;
-    agent_id?: number;
-  }) => {
-    return request(() => api.post('/api/v1/rag/stores', knowledgeData));
-  }, [request]);
+  const addKnowledge = useCallback(
+    (knowledgeData: {
+      level: string;
+      name: string;
+      content: string;
+      project_id?: number;
+      crew_id?: number;
+      agent_id?: number;
+    }) => {
+      return request(() => api.post('/api/v1/rag/stores', knowledgeData));
+    },
+    [request]
+  );
 
   const getRAGStats = useCallback(() => {
     return request(() => api.get('/api/v1/rag/stats'));
