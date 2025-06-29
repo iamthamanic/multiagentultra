@@ -21,30 +21,30 @@ export const API_ENDPOINTS = {
   health: `${API_CONFIG.BASE_URL}/api/v1/health`,
 
   // Projects
-  projects: `${API_CONFIG.BASE_URL}/api/v1/projects`,
-  project: (id: number) => `${API_CONFIG.BASE_URL}/api/v1/projects/${id}`,
+  projects: `${API_CONFIG.BASE_URL}/api/v1/projects/`,
+  project: (id: number) => `${API_CONFIG.BASE_URL}/api/v1/projects/${id}/`,
 
   // Crews
-  crews: `${API_CONFIG.BASE_URL}/api/v1/crews`,
-  crew: (id: number) => `${API_CONFIG.BASE_URL}/api/v1/crews/${id}`,
+  crews: `${API_CONFIG.BASE_URL}/api/v1/crews/`,
+  crew: (id: number) => `${API_CONFIG.BASE_URL}/api/v1/crews/${id}/`,
   crewsByProject: (projectId: number) =>
-    `${API_CONFIG.BASE_URL}/api/v1/crews?project_id=${projectId}`,
+    `${API_CONFIG.BASE_URL}/api/v1/crews/?project_id=${projectId}`,
 
   // Agents
-  agents: `${API_CONFIG.BASE_URL}/api/v1/agents`,
-  agent: (id: number) => `${API_CONFIG.BASE_URL}/api/v1/agents/${id}`,
-  agentsByCrew: (crewId: number) => `${API_CONFIG.BASE_URL}/api/v1/agents?crew_id=${crewId}`,
+  agents: `${API_CONFIG.BASE_URL}/api/v1/agents/`,
+  agent: (id: number) => `${API_CONFIG.BASE_URL}/api/v1/agents/${id}/`,
+  agentsByCrew: (crewId: number) => `${API_CONFIG.BASE_URL}/api/v1/agents/?crew_id=${crewId}`,
 
   // Tasks
-  tasks: `${API_CONFIG.BASE_URL}/api/v1/tasks`,
-  task: (id: number) => `${API_CONFIG.BASE_URL}/api/v1/tasks/${id}`,
-  tasksByCrew: (crewId: number) => `${API_CONFIG.BASE_URL}/api/v1/tasks?crew_id=${crewId}`,
+  tasks: `${API_CONFIG.BASE_URL}/api/v1/tasks/`,
+  task: (id: number) => `${API_CONFIG.BASE_URL}/api/v1/tasks/${id}/`,
+  tasksByCrew: (crewId: number) => `${API_CONFIG.BASE_URL}/api/v1/tasks/?crew_id=${crewId}`,
 
   // RAG
-  ragStores: `${API_CONFIG.BASE_URL}/api/v1/rag/stores`,
-  ragSearch: `${API_CONFIG.BASE_URL}/api/v1/rag/search`,
-  ragUpload: `${API_CONFIG.BASE_URL}/api/v1/rag/upload`,
-  ragStats: `${API_CONFIG.BASE_URL}/api/v1/rag/stats`,
+  ragStores: `${API_CONFIG.BASE_URL}/api/v1/rag/stores/`,
+  ragSearch: `${API_CONFIG.BASE_URL}/api/v1/rag/search/`,
+  ragUpload: `${API_CONFIG.BASE_URL}/api/v1/rag/upload/`,
+  ragStats: `${API_CONFIG.BASE_URL}/api/v1/rag/stats/`,
 } as const;
 
 // API Error Types

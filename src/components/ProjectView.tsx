@@ -21,10 +21,6 @@ export default function ProjectView({ onSelectProject, selectedProject }: Projec
   const [newProject, setNewProject] = useState({ name: '', description: '' });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadProjects();
-  }, [loadProjects]);
-
   const loadProjects = useCallback(async () => {
     try {
       // ✅ FIXED: Use centralized API configuration
@@ -36,6 +32,10 @@ export default function ProjectView({ onSelectProject, selectedProject }: Projec
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    loadProjects();
+  }, [loadProjects]);
 
   const createProject = async () => {
     if (!newProject.name.trim()) return;

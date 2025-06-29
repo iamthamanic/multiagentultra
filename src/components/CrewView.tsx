@@ -20,10 +20,6 @@ export default function CrewView({ projectId, onSelectCrew, selectedCrew }: Crew
   const [crews, setCrews] = useState<Crew[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadCrews();
-  }, [projectId, loadCrews]);
-
   const loadCrews = useCallback(async () => {
     try {
       // ✅ FIXED: Use centralized API with server-side filtering
@@ -37,6 +33,10 @@ export default function CrewView({ projectId, onSelectCrew, selectedCrew }: Crew
       setLoading(false);
     }
   }, [projectId]);
+
+  useEffect(() => {
+    loadCrews();
+  }, [projectId, loadCrews]);
 
   if (!projectId) {
     return (
