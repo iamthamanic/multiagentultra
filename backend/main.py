@@ -23,13 +23,23 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS Middleware
+# CORS Middleware - Restricted for security
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=[
+        "Accept",
+        "Accept-Language",
+        "Content-Language",
+        "Content-Type",
+        "Authorization",
+        "X-Requested-With",
+        "X-API-Key"
+    ],
+    expose_headers=["X-Total-Count", "X-Page-Count"],
+    max_age=3600,  # Cache preflight requests for 1 hour
 )
 
 # Include API routes
@@ -59,6 +69,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8900,
-        reload=True
+        port=8888,  # Standardized port
+        reload=settings.DEBUG,
+        log_level=settings.LOG_LEVEL.lower()
     )

@@ -10,7 +10,8 @@ services:
       - '3000:3000'
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_API_URL=http://localhost:8888
+      - NEXT_PUBLIC_WS_URL=ws://localhost:8888/ws
     volumes:
       - .:/app
       - /app/node_modules
@@ -23,7 +24,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - '8900:8900'
+      - '8888:8888'
     environment:
       - DATABASE_URL=postgresql://postgres:password@postgres:5432/multiagent_ultra
       - REDIS_URL=redis://redis:6379
@@ -59,7 +60,7 @@ services:
   chromadb:
     image: chromadb/chroma:latest
     ports:
-      - '8001:8000'
+      - '8889:8000'  # Use 8889 to avoid conflict with main API
     volumes:
       - chroma_data:/chroma/chroma
     environment:

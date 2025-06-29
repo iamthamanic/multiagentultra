@@ -1,27 +1,38 @@
+# Core framework
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-crewai==0.134.0
-# crewai-tools==0.48.0  # Removed due to dependency conflicts
-python-multipart==0.0.6
 pydantic==2.5.0
 python-dotenv==1.0.0
+
+# AI/ML dependencies
+crewai==0.134.0
+# Re-enable sentence-transformers with compatible version
+sentence-transformers==2.2.2
+chromadb>=0.5.23
+
+# Database
 sqlalchemy==2.0.23
 alembic==1.13.1
 psycopg2-binary==2.9.9
+
+# Caching & messaging
 redis==5.0.1
 celery==5.3.4
-# langchain==0.1.0  # Removed due to conflicts
-# langchain-openai==0.0.2  # Removed due to conflicts
-chromadb>=0.5.23
-# sentence-transformers==2.2.2  # Removed due to conflicts
-websockets==12.0
 
-# Authentication dependencies
+# Web & networking
+websockets==12.0
+python-multipart==0.0.6  # Note: duplicate removed
+
+# Authentication
 passlib[bcrypt]==1.7.4
 python-jose[cryptography]==3.3.0
-python-multipart==0.0.6
 
-# Testing dependencies
+# Development & testing
 pytest==7.4.3
 pytest-asyncio==0.21.1
+pytest-cov==4.1.0
 httpx==0.25.2
+
+# Utilities
+typing-extensions>=4.8.0
+asyncio>=3.4.3

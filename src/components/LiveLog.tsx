@@ -1,18 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { API_CONFIG } from '@/config/api';
+import { useWebSocket, WebSocketMessage } from '@/hooks/useWebSocket';
 
-interface LogMessage {
-  type: 'thought' | 'action' | 'result' | 'error' | 'milestone' | 'status';
-  agent_id?: number;
-  agent_name?: string;
-  crew_id?: number;
-  project_id?: number;
-  content: string;
-  metadata?: Record<string, unknown>;
-  timestamp: string;
-}
+// Use WebSocketMessage type from hook
+type LogMessage = WebSocketMessage;
 
 interface LiveLogProps {
   projectId: number;
@@ -22,20 +15,43 @@ interface LiveLogProps {
 
 export default function LiveLog({ projectId, className = '', maxMessages = 100 }: LiveLogProps) {
   const [messages, setMessages] = useState<LogMessage[]>([]);
-  const [isConnected, setIsConnected] = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
-  const wsRef = useRef<WebSocket | null>(null);
   const logContainerRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
 
-  useEffect(() => {
-    connectWebSocket();
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
-  }, [projectId]);
+  // WebSocket URL
+  const wsUrl = projectId ? `${API_CONFIG.WS_URL}?project_id=${projectId}` : null;
+
+  // Handle incoming messages
+  const handleMessage = useCallback((message: WebSocketMessage) => {
+    setMessages(prev => {
+      const newMessages = [...prev, message];
+      // Keep only the last maxMessages
+      return newMessages.slice(-maxMessages);
+    });
+  }, [maxMessages]);
+
+  // Use our robust WebSocket hook
+  const {
+    isConnected,
+    isConnecting,
+    error,
+    retryCount,
+    reconnect
+  } = useWebSocket(wsUrl, {
+    maxRetries: 5,
+    initialRetryDelay: 1000,
+    maxRetryDelay: 30000,
+    onMessage: handleMessage,
+    onConnect: () => {
+      console.log(`Connected to live log for project ${projectId}`);
+    },
+    onDisconnect: () => {
+      console.log('WebSocket connection closed');
+    },
+    onError: (error) => {
+      console.error('WebSocket error:', error);
+    }
+  });
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -43,61 +59,6 @@ export default function LiveLog({ projectId, className = '', maxMessages = 100 }
       logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
     }
   }, [messages, autoScroll]);
-
-  const connectWebSocket = () => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      return;
-    }
-
-    setIsConnecting(true);
-
-    // Convert HTTP URL to WebSocket URL
-    const wsUrl = `${API_CONFIG.WS_URL}?project_id=${projectId}`;
-
-    try {
-      wsRef.current = new WebSocket(wsUrl);
-
-      wsRef.current.onopen = () => {
-        setIsConnected(true);
-        setIsConnecting(false);
-        console.log(`Connected to live log for project ${projectId}`);
-      };
-
-      wsRef.current.onmessage = event => {
-        try {
-          const message: LogMessage = JSON.parse(event.data);
-          setMessages(prev => {
-            const newMessages = [...prev, message];
-            // Keep only the last maxMessages
-            return newMessages.slice(-maxMessages);
-          });
-        } catch (error) {
-          console.error('Failed to parse WebSocket message:', error);
-        }
-      };
-
-      wsRef.current.onclose = () => {
-        setIsConnected(false);
-        setIsConnecting(false);
-        console.log('WebSocket connection closed');
-
-        // Attempt to reconnect after 3 seconds
-        setTimeout(() => {
-          if (wsRef.current?.readyState !== WebSocket.OPEN) {
-            connectWebSocket();
-          }
-        }, 3000);
-      };
-
-      wsRef.current.onerror = error => {
-        console.error('WebSocket error:', error);
-        setIsConnecting(false);
-      };
-    } catch (error) {
-      console.error('Failed to create WebSocket connection:', error);
-      setIsConnecting(false);
-    }
-  };
 
   const handleScroll = () => {
     if (!logContainerRef.current) return;
@@ -187,7 +148,7 @@ export default function LiveLog({ projectId, className = '', maxMessages = 100 }
           </button>
 
           <button
-            onClick={connectWebSocket}
+            onClick={reconnect}
             disabled={isConnected || isConnecting}
             className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm hover:bg-blue-200 disabled:opacity-50"
           >
