@@ -1,0 +1,97 @@
+
+> starter-pack@0.1.0 dev
+> next dev --turbo --port 3000
+
+   ▲ Next.js 15.3.4 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.2.64:3000
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Compiled middleware in 129ms
+ ✓ Ready in 903ms
+ ○ Compiling / ...
+ ✓ Compiled / in 2.5s
+ ⨯ [Error: This function is not supported in React Server Components. Please only use this export in a Client Component.] {
+  digest: '318704029'
+}
+ HEAD / 500 in 2808ms
+ ✓ Compiled in 263ms
+ ✓ Compiled / in 28ms
+ ⨯ [Error: This function is not supported in React Server Components. Please only use this export in a Client Component.] {
+  digest: '318704029'
+}
+ HEAD / 500 in 285ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 3s
+ ⨯ [Error: This function is not supported in React Server Components. Please only use this export in a Client Component.] {
+  digest: '318704029'
+}
+ HEAD /dashboard 500 in 3015ms
+ ✓ Compiled in 401ms
+ ⨯ ./src/app/layout.tsx:13:1
+Module not found: Can't resolve '@/components/providers/Providers'
+[0m [90m 11 |[39m[0m
+[0m [90m 12 |[39m [90m// Client Providers[39m[0m
+[0m[31m[1m>[22m[39m[90m 13 |[39m [36mimport[39m { [33mProviders[39m } [36mfrom[39m [32m'@/components/providers/Providers'[39m[33m;[39m[0m
+[0m [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 14 |[39m[0m
+[0m [90m 15 |[39m [36mconst[39m geist [33m=[39m [33mGeist[39m({[0m
+[0m [90m 16 |[39m   variable[33m:[39m [32m'--font-geist-sans'[39m[33m,[39m[0m
+
+Import map: aliased to relative './src/components/providers/Providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/app/layout.tsx:13:1
+Module not found: Can't resolve '@/components/providers/Providers'
+[0m [90m 11 |[39m[0m
+[0m [90m 12 |[39m [90m// Client Providers[39m[0m
+[0m[31m[1m>[22m[39m[90m 13 |[39m [36mimport[39m { [33mProviders[39m } [36mfrom[39m [32m'@/components/providers/Providers'[39m[33m;[39m[0m
+[0m [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 14 |[39m[0m
+[0m [90m 15 |[39m [36mconst[39m geist [33m=[39m [33mGeist[39m({[0m
+[0m [90m 16 |[39m   variable[33m:[39m [32m'--font-geist-sans'[39m[33m,[39m[0m
+
+Import map: aliased to relative './src/components/providers/Providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/app/layout.tsx:13:1
+Module not found: Can't resolve '@/components/providers/Providers'
+[0m [90m 11 |[39m[0m
+[0m [90m 12 |[39m [90m// Client Providers[39m[0m
+[0m[31m[1m>[22m[39m[90m 13 |[39m [36mimport[39m { [33mProviders[39m } [36mfrom[39m [32m'@/components/providers/Providers'[39m[33m;[39m[0m
+[0m [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 14 |[39m[0m
+[0m [90m 15 |[39m [36mconst[39m geist [33m=[39m [33mGeist[39m({[0m
+[0m [90m 16 |[39m   variable[33m:[39m [32m'--font-geist-sans'[39m[33m,[39m[0m
+
+Import map: aliased to relative './src/components/providers/Providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/app/layout.tsx:13:1
+Module not found: Can't resolve '@/components/providers/Providers'
+[0m [90m 11 |[39m[0m
+[0m [90m 12 |[39m [90m// Client Providers[39m[0m
+[0m[31m[1m>[22m[39m[90m 13 |[39m [36mimport[39m { [33mProviders[39m } [36mfrom[39m [32m'@/components/providers/Providers'[39m[33m;[39m[0m
+[0m [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[0m
+[0m [90m 14 |[39m[0m
+[0m [90m 15 |[39m [36mconst[39m geist [33m=[39m [33mGeist[39m({[0m
+[0m [90m 16 |[39m   variable[33m:[39m [32m'--font-geist-sans'[39m[33m,[39m[0m
+
+Import map: aliased to relative './src/components/providers/Providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ✓ Compiled in 654ms
+[?25h

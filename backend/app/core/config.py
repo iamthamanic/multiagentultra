@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 from typing import Optional, List
 import os
 import secrets
@@ -15,7 +15,8 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = Field(default="HS256", env="JWT_ALGORITHM")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=30, env="ACCESS_TOKEN_EXPIRE_MINUTES")
     
-    @validator('SECRET_KEY')
+    @field_validator('SECRET_KEY')
+    @classmethod
     def validate_secret_key(cls, v):
         if not v:
             raise ValueError("SECRET_KEY is required and cannot be empty")
@@ -36,13 +37,14 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: Optional[str] = Field(default=None, env="ANTHROPIC_API_KEY", description="Anthropic API key for Claude operations")
     CREWAI_API_KEY: Optional[str] = Field(default=None, env="CREWAI_API_KEY", description="CrewAI API key for agent operations")
     
-    @validator('OPENAI_API_KEY', 'ANTHROPIC_API_KEY', 'CREWAI_API_KEY')
-    def validate_api_keys(cls, v, field):
+    @field_validator('OPENAI_API_KEY', 'ANTHROPIC_API_KEY', 'CREWAI_API_KEY')
+    @classmethod
+    def validate_api_keys(cls, v):
         if v is not None:
             if len(v.strip()) == 0:
-                raise ValueError(f"{field.name} cannot be empty string")
+                raise ValueError("API key cannot be empty string")
             if v.startswith('sk-') and len(v) < 40:
-                raise ValueError(f"{field.name} appears to be invalid (too short)")
+                raise ValueError("API key appears to be invalid (too short)")
         return v
     
     # Redis

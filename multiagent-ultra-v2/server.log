@@ -1,0 +1,16 @@
+
+> starter-pack@0.1.0 dev
+> next dev --turbo --port 3000
+
+   ▲ Next.js 15.3.4 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.2.64:3000
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Compiled middleware in 144ms
+ ✓ Ready in 1051ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 2.1s
+ HEAD /dashboard 200 in 2444ms
+[?25h
