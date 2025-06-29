@@ -36,8 +36,9 @@ export default function CreateProjectModal({ isOpen, onClose, onSubmit }: Create
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
+            <label htmlFor="project-name" className="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
             <input
+              id="project-name"
               type="text"
               value={newProject.name}
               onChange={e => setNewProject({ name: e.target.value })}
@@ -47,8 +48,9 @@ export default function CreateProjectModal({ isOpen, onClose, onSubmit }: Create
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label htmlFor="project-description" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea
+              id="project-description"
               value={newProject.description}
               onChange={e => setNewProject({ description: e.target.value })}
               className="w-full border border-gray-300 rounded-md px-3 py-2 h-20"

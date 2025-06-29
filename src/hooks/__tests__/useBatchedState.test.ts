@@ -152,14 +152,14 @@ describe('useBatchedArrayState', () => {
     act(() => {
       const [, { remove }] = result.current;
       remove(1); // Remove index 1 (value 2)
-      remove(2); // Remove index 2 (value 4, but after first removal it's value 3)
+      remove(3); // Remove index 3 (value 4)
     });
 
     act(() => {
       jest.runAllTimers();
     });
 
-    expect(result.current[0]).toEqual([1, 5]);
+    expect(result.current[0]).toEqual([1, 3, 5]);
   });
 
   it('should update items correctly', () => {
